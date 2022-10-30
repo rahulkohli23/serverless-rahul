@@ -1,0 +1,282 @@
+{
+  "version": "20.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "coding-challenge-infra-stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "coding-challenge-infra-stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "coding-challenge-infra-stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "coding-challenge-infra-stack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/27643ac9ed41765f5026ce706544ec0cd86e893eb26b35402ea6844b5e3edc44.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "coding-challenge-infra-stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "coding-challenge-infra-stack.assets"
+      ],
+      "metadata": {
+        "/coding-challenge-infra-stack/driver-tips-event-queue-ts/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "drivertipseventqueuets57E6CD59"
+          }
+        ],
+        "/coding-challenge-infra-stack/Driver-mgmt-table": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "DrivermgmttableE136BEA7"
+            }
+          }
+        ],
+        "/coding-challenge-infra-stack/Driver-mgmt-table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DrivermgmttableE136BEA7"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdriverhandlerServiceRoleB472BF73"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdriverhandlerServiceRoleDefaultPolicyF98C9CB2"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdriverhandler02D42108"
+          }
+        ],
+        "/coding-challenge-infra-stack/get-driver-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "getdriverhandlerServiceRoleE9BB424A"
+          }
+        ],
+        "/coding-challenge-infra-stack/get-driver-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "getdriverhandlerServiceRoleDefaultPolicy60947823"
+          }
+        ],
+        "/coding-challenge-infra-stack/get-driver-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "getdriverhandlerF0A847E0"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertestdatahandlerServiceRoleBE1B00A6"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertestdatahandlerServiceRoleDefaultPolicy830F18E8"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-test-data-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertestdatahandler83073C01"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertestdatahandlerSqsEventSourcecodingchallengeinfrastackdrivertipseventqueuets9B4EB77350A8BE66"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertiptestdatahandlerServiceRole5675FED4"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertiptestdatahandlerServiceRoleDefaultPolicy6AA6FA02"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-tip-test-data-handler/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertiptestdatahandler01F652FD"
+          }
+        ],
+        "/coding-challenge-infra-stack/create-driver-tip-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "createdrivertiptestdatahandlerSqsEventSourcecodingchallengeinfrastackdrivertipseventqueuets9B4EB7732F90A76F"
+          }
+        ],
+        "/coding-challenge-infra-stack/test-data-driver-rule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "testdatadriverrule7E80E6F7"
+          }
+        ],
+        "/coding-challenge-infra-stack/test-data-driver-rule/AllowEventRulecodingchallengeinfrastackcreatedrivertestdatahandlerA2C095A2": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "testdatadriverruleAllowEventRulecodingchallengeinfrastackcreatedrivertestdatahandlerA2C095A28D724E81"
+          }
+        ],
+        "/coding-challenge-infra-stack/test-data-tips-rule/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "testdatatipsrule3BE9762D"
+          }
+        ],
+        "/coding-challenge-infra-stack/test-data-tips-rule/AllowEventRulecodingchallengeinfrastackcreatedrivertiptestdatahandler1BD83843": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "testdatatipsruleAllowEventRulecodingchallengeinfrastackcreatedrivertiptestdatahandler1BD8384365597270"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGw803A64D4"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwCloudWatchRoleD18F5B51"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwAccount02C25573"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwDeploymentFD4761F0d12cd5c4aaabda7961e4fab413d80a30"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/DeploymentStage.dev/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwDeploymentStagedevF8AEB2F1"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwEndpoint9453671B"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversB36BD1BD"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversPOSTApiPermissioncodingchallengeinfrastackDriverRestApiGw5CDF6ABAPOSTdriversD414C10E"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversPOSTApiPermissionTestcodingchallengeinfrastackDriverRestApiGw5CDF6ABAPOSTdrivers84075C69"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversPOSTFEF637B2"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversid8AA0D2EA"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversidGETApiPermissioncodingchallengeinfrastackDriverRestApiGw5CDF6ABAGETdriversid00B3E99C"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversidGETApiPermissionTestcodingchallengeinfrastackDriverRestApiGw5CDF6ABAGETdriversid0A684DF1"
+          }
+        ],
+        "/coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DriverRestApiGwdriversidGET109BA3EA"
+          }
+        ],
+        "/coding-challenge-infra-stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/coding-challenge-infra-stack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/coding-challenge-infra-stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/coding-challenge-infra-stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "coding-challenge-infra-stack"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "version": "20.0.0",
+  "files": {
+    "74b62c8ec6766d9b5213f94db5322257f4cc42f4fd5ad6ee2a88e5275006c46a": {
+      "source": {
+        "path": "/Users/rahulkohli/Desktop/projects/coding-challenge-rahul",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "74b62c8ec6766d9b5213f94db5322257f4cc42f4fd5ad6ee2a88e5275006c46a.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "a30761cf4149bf6b367d0e39dd1f8f114b01c4bf899c3b27d315d02ff86d713d": {
+      "source": {
+        "path": "/Users/rahulkohli/Desktop/projects/coding-challenge-rahul",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "a30761cf4149bf6b367d0e39dd1f8f114b01c4bf899c3b27d315d02ff86d713d.zip",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    },
+    "27643ac9ed41765f5026ce706544ec0cd86e893eb26b35402ea6844b5e3edc44": {
+      "source": {
+        "path": "coding-challenge-infra-stack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-current_region": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}",
+          "objectKey": "27643ac9ed41765f5026ce706544ec0cd86e893eb26b35402ea6844b5e3edc44.json",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-${AWS::Region}"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

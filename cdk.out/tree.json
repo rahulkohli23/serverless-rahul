@@ -1,0 +1,1637 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.1.42"
+        }
+      },
+      "coding-challenge-infra-stack": {
+        "id": "coding-challenge-infra-stack",
+        "path": "coding-challenge-infra-stack",
+        "children": {
+          "driver-tips-event-queue-ts": {
+            "id": "driver-tips-event-queue-ts",
+            "path": "coding-challenge-infra-stack/driver-tips-event-queue-ts",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/driver-tips-event-queue-ts/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "kmsMasterKeyId": "alias/aws/sqs",
+                    "queueName": "driver-tips-event-queue-ts"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.28.1"
+            }
+          },
+          "Driver-mgmt-table": {
+            "id": "Driver-mgmt-table",
+            "path": "coding-challenge-infra-stack/Driver-mgmt-table",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/Driver-mgmt-table/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                  "aws:cdk:cloudformation:props": {
+                    "keySchema": [
+                      {
+                        "attributeName": "id",
+                        "keyType": "HASH"
+                      }
+                    ],
+                    "attributeDefinitions": [
+                      {
+                        "attributeName": "id",
+                        "attributeType": "S"
+                      }
+                    ],
+                    "billingMode": "PAY_PER_REQUEST",
+                    "pointInTimeRecoverySpecification": {
+                      "pointInTimeRecoveryEnabled": true
+                    },
+                    "sseSpecification": {
+                      "sseEnabled": false
+                    },
+                    "tableName": "challenge-cloud-native-driver-mgmt-ts"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                  "version": "2.28.1"
+                }
+              },
+              "ScalingRole": {
+                "id": "ScalingRole",
+                "path": "coding-challenge-infra-stack/Driver-mgmt-table/ScalingRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+              "version": "2.28.1"
+            }
+          },
+          "create-driver-handler": {
+            "id": "create-driver-handler",
+            "path": "coding-challenge-infra-stack/create-driver-handler",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "coding-challenge-infra-stack/create-driver-handler/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/create-driver-handler/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "coding-challenge-infra-stack/create-driver-handler/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "coding-challenge-infra-stack/create-driver-handler/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DrivermgmttableE136BEA7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "createdriverhandlerServiceRoleDefaultPolicyF98C9CB2",
+                            "roles": [
+                              {
+                                "Ref": "createdriverhandlerServiceRoleB472BF73"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.28.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.28.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "coding-challenge-infra-stack/create-driver-handler/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "coding-challenge-infra-stack/create-driver-handler/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "coding-challenge-infra-stack/create-driver-handler/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.28.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/create-driver-handler/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "74b62c8ec6766d9b5213f94db5322257f4cc42f4fd5ad6ee2a88e5275006c46a.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "createdriverhandlerServiceRoleB472BF73",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "STAGE": "dev",
+                        "NODE_OPTIONS": "--enable-source-maps",
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "handler": "index.handleCreateDriver",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "timeout": 30
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.28.1"
+            }
+          },
+          "get-driver-handler": {
+            "id": "get-driver-handler",
+            "path": "coding-challenge-infra-stack/get-driver-handler",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "coding-challenge-infra-stack/get-driver-handler/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/get-driver-handler/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "coding-challenge-infra-stack/get-driver-handler/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "coding-challenge-infra-stack/get-driver-handler/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DrivermgmttableE136BEA7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "getdriverhandlerServiceRoleDefaultPolicy60947823",
+                            "roles": [
+                              {
+                                "Ref": "getdriverhandlerServiceRoleE9BB424A"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.28.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.28.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "coding-challenge-infra-stack/get-driver-handler/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "coding-challenge-infra-stack/get-driver-handler/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "coding-challenge-infra-stack/get-driver-handler/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.28.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/get-driver-handler/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "74b62c8ec6766d9b5213f94db5322257f4cc42f4fd5ad6ee2a88e5275006c46a.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "getdriverhandlerServiceRoleE9BB424A",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "STAGE": "dev",
+                        "NODE_OPTIONS": "--enable-source-maps",
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "handler": "index.handleGetDriver",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "timeout": 30
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.28.1"
+            }
+          },
+          "create-driver-test-data-handler": {
+            "id": "create-driver-test-data-handler",
+            "path": "coding-challenge-infra-stack/create-driver-test-data-handler",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "coding-challenge-infra-stack/create-driver-test-data-handler/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "sqs:ReceiveMessage",
+                                    "sqs:ChangeMessageVisibility",
+                                    "sqs:GetQueueUrl",
+                                    "sqs:DeleteMessage",
+                                    "sqs:GetQueueAttributes"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "drivertipseventqueuets57E6CD59",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DrivermgmttableE136BEA7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "createdrivertestdatahandlerServiceRoleDefaultPolicy830F18E8",
+                            "roles": [
+                              {
+                                "Ref": "createdrivertestdatahandlerServiceRoleBE1B00A6"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.28.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.28.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "coding-challenge-infra-stack/create-driver-test-data-handler/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "coding-challenge-infra-stack/create-driver-test-data-handler/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "coding-challenge-infra-stack/create-driver-test-data-handler/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.28.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/create-driver-test-data-handler/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "a30761cf4149bf6b367d0e39dd1f8f114b01c4bf899c3b27d315d02ff86d713d.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "createdrivertestdatahandlerServiceRoleBE1B00A6",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "STAGE": "dev",
+                        "NODE_OPTIONS": "--enable-source-maps",
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "handler": "index.handleCreateDriversTestData",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "timeout": 30
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.28.1"
+                }
+              },
+              "SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773": {
+                "id": "SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773",
+                "path": "coding-challenge-infra-stack/create-driver-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/create-driver-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                      "aws:cdk:cloudformation:props": {
+                        "functionName": {
+                          "Ref": "createdrivertestdatahandler83073C01"
+                        },
+                        "eventSourceArn": {
+                          "Fn::GetAtt": [
+                            "drivertipseventqueuets57E6CD59",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.28.1"
+            }
+          },
+          "create-driver-tip-test-data-handler": {
+            "id": "create-driver-tip-test-data-handler",
+            "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "sqs:ReceiveMessage",
+                                    "sqs:ChangeMessageVisibility",
+                                    "sqs:GetQueueUrl",
+                                    "sqs:DeleteMessage",
+                                    "sqs:GetQueueAttributes"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "drivertipseventqueuets57E6CD59",
+                                      "Arn"
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "dynamodb:BatchGetItem",
+                                    "dynamodb:GetRecords",
+                                    "dynamodb:GetShardIterator",
+                                    "dynamodb:Query",
+                                    "dynamodb:GetItem",
+                                    "dynamodb:Scan",
+                                    "dynamodb:ConditionCheckItem",
+                                    "dynamodb:BatchWriteItem",
+                                    "dynamodb:PutItem",
+                                    "dynamodb:UpdateItem",
+                                    "dynamodb:DeleteItem",
+                                    "dynamodb:DescribeTable"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DrivermgmttableE136BEA7",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Ref": "AWS::NoValue"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "createdrivertiptestdatahandlerServiceRoleDefaultPolicy6AA6FA02",
+                            "roles": [
+                              {
+                                "Ref": "createdrivertiptestdatahandlerServiceRole5675FED4"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.28.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.28.1"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.28.1"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.28.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": {
+                        "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+                      },
+                      "s3Key": "a30761cf4149bf6b367d0e39dd1f8f114b01c4bf899c3b27d315d02ff86d713d.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "createdrivertiptestdatahandlerServiceRole5675FED4",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "STAGE": "dev",
+                        "NODE_OPTIONS": "--enable-source-maps",
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "handler": "index.handleSampleDriverTippingEvent",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "timeout": 30
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.28.1"
+                }
+              },
+              "SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773": {
+                "id": "SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773",
+                "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/create-driver-tip-test-data-handler/SqsEventSource:codingchallengeinfrastackdrivertipseventqueuets9B4EB773/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                      "aws:cdk:cloudformation:props": {
+                        "functionName": {
+                          "Ref": "createdrivertiptestdatahandler01F652FD"
+                        },
+                        "eventSourceArn": {
+                          "Fn::GetAtt": [
+                            "drivertipseventqueuets57E6CD59",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnEventSourceMapping",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.EventSourceMapping",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda_nodejs.NodejsFunction",
+              "version": "2.28.1"
+            }
+          },
+          "test-data-driver-rule": {
+            "id": "test-data-driver-rule",
+            "path": "coding-challenge-infra-stack/test-data-driver-rule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/test-data-driver-rule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "driver-test-data-scheduler-rule",
+                    "scheduleExpression": "rate(2 minutes)",
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "createdrivertestdatahandler83073C01",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.28.1"
+                }
+              },
+              "AllowEventRulecodingchallengeinfrastackcreatedrivertestdatahandlerA2C095A2": {
+                "id": "AllowEventRulecodingchallengeinfrastackcreatedrivertestdatahandlerA2C095A2",
+                "path": "coding-challenge-infra-stack/test-data-driver-rule/AllowEventRulecodingchallengeinfrastackcreatedrivertestdatahandlerA2C095A2",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "createdrivertestdatahandler83073C01",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "testdatadriverrule7E80E6F7",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.28.1"
+            }
+          },
+          "test-data-tips-rule": {
+            "id": "test-data-tips-rule",
+            "path": "coding-challenge-infra-stack/test-data-tips-rule",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/test-data-tips-rule/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "name": "tips-test-data-scheduler-rule",
+                    "scheduleExpression": "rate(1 minute)",
+                    "state": "DISABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "createdrivertiptestdatahandler01F652FD",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.28.1"
+                }
+              },
+              "AllowEventRulecodingchallengeinfrastackcreatedrivertiptestdatahandler1BD83843": {
+                "id": "AllowEventRulecodingchallengeinfrastackcreatedrivertiptestdatahandler1BD83843",
+                "path": "coding-challenge-infra-stack/test-data-tips-rule/AllowEventRulecodingchallengeinfrastackcreatedrivertiptestdatahandler1BD83843",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "createdrivertiptestdatahandler01F652FD",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "testdatatipsrule3BE9762D",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.28.1"
+            }
+          },
+          "DriverRestApiGw": {
+            "id": "DriverRestApiGw",
+            "path": "coding-challenge-infra-stack/DriverRestApiGw",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::RestApi",
+                  "aws:cdk:cloudformation:props": {
+                    "endpointConfiguration": {
+                      "types": [
+                        "REGIONAL"
+                      ]
+                    },
+                    "name": "DriverApiGw"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnRestApi",
+                  "version": "2.28.1"
+                }
+              },
+              "CloudWatchRole": {
+                "id": "CloudWatchRole",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/CloudWatchRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/DriverRestApiGw/CloudWatchRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "apigateway.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+                              ]
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.28.1"
+                }
+              },
+              "Account": {
+                "id": "Account",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/Account",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Account",
+                  "aws:cdk:cloudformation:props": {
+                    "cloudWatchRoleArn": {
+                      "Fn::GetAtt": [
+                        "DriverRestApiGwCloudWatchRoleD18F5B51",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.CfnAccount",
+                  "version": "2.28.1"
+                }
+              },
+              "Deployment": {
+                "id": "Deployment",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/Deployment",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/DriverRestApiGw/Deployment/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Deployment",
+                      "aws:cdk:cloudformation:props": {
+                        "restApiId": {
+                          "Ref": "DriverRestApiGw803A64D4"
+                        },
+                        "description": "Automatically created by the RestApi construct"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnDeployment",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Deployment",
+                  "version": "2.28.1"
+                }
+              },
+              "DeploymentStage.dev": {
+                "id": "DeploymentStage.dev",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/DeploymentStage.dev",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "coding-challenge-infra-stack/DriverRestApiGw/DeploymentStage.dev/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::ApiGateway::Stage",
+                      "aws:cdk:cloudformation:props": {
+                        "restApiId": {
+                          "Ref": "DriverRestApiGw803A64D4"
+                        },
+                        "deploymentId": {
+                          "Ref": "DriverRestApiGwDeploymentFD4761F0d12cd5c4aaabda7961e4fab413d80a30"
+                        },
+                        "methodSettings": [
+                          {
+                            "httpMethod": "*",
+                            "resourcePath": "/*",
+                            "dataTraceEnabled": false,
+                            "loggingLevel": "INFO",
+                            "metricsEnabled": true
+                          }
+                        ],
+                        "stageName": "dev"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.CfnStage",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.Stage",
+                  "version": "2.28.1"
+                }
+              },
+              "Endpoint": {
+                "id": "Endpoint",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/Endpoint",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.28.1"
+                }
+              },
+              "Default": {
+                "id": "Default",
+                "path": "coding-challenge-infra-stack/DriverRestApiGw/Default",
+                "children": {
+                  "drivers": {
+                    "id": "drivers",
+                    "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                          "aws:cdk:cloudformation:props": {
+                            "parentId": {
+                              "Fn::GetAtt": [
+                                "DriverRestApiGw803A64D4",
+                                "RootResourceId"
+                              ]
+                            },
+                            "pathPart": "drivers",
+                            "restApiId": {
+                              "Ref": "DriverRestApiGw803A64D4"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                          "version": "2.28.1"
+                        }
+                      },
+                      "POST": {
+                        "id": "POST",
+                        "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST",
+                        "children": {
+                          "ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers": {
+                            "id": "ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers",
+                            "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "createdriverhandler02D42108",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "DriverRestApiGw803A64D4"
+                                      },
+                                      "/",
+                                      {
+                                        "Ref": "DriverRestApiGwDeploymentStagedevF8AEB2F1"
+                                      },
+                                      "/POST/drivers"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.28.1"
+                            }
+                          },
+                          "ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers": {
+                            "id": "ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers",
+                            "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.POST..drivers",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                              "aws:cdk:cloudformation:props": {
+                                "action": "lambda:InvokeFunction",
+                                "functionName": {
+                                  "Fn::GetAtt": [
+                                    "createdriverhandler02D42108",
+                                    "Arn"
+                                  ]
+                                },
+                                "principal": "apigateway.amazonaws.com",
+                                "sourceArn": {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      "arn:",
+                                      {
+                                        "Ref": "AWS::Partition"
+                                      },
+                                      ":execute-api:",
+                                      {
+                                        "Ref": "AWS::Region"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "AWS::AccountId"
+                                      },
+                                      ":",
+                                      {
+                                        "Ref": "DriverRestApiGw803A64D4"
+                                      },
+                                      "/test-invoke-stage/POST/drivers"
+                                    ]
+                                  ]
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                              "version": "2.28.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/POST/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                              "aws:cdk:cloudformation:props": {
+                                "httpMethod": "POST",
+                                "resourceId": {
+                                  "Ref": "DriverRestApiGwdriversB36BD1BD"
+                                },
+                                "restApiId": {
+                                  "Ref": "DriverRestApiGw803A64D4"
+                                },
+                                "authorizationType": "NONE",
+                                "integration": {
+                                  "type": "AWS_PROXY",
+                                  "uri": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":apigateway:",
+                                        {
+                                          "Ref": "AWS::Region"
+                                        },
+                                        ":lambda:path/2015-03-31/functions/",
+                                        {
+                                          "Fn::GetAtt": [
+                                            "createdriverhandler02D42108",
+                                            "Arn"
+                                          ]
+                                        },
+                                        "/invocations"
+                                      ]
+                                    ]
+                                  },
+                                  "integrationHttpMethod": "POST"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                              "version": "2.28.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                          "version": "2.28.1"
+                        }
+                      },
+                      "{id}": {
+                        "id": "{id}",
+                        "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::ApiGateway::Resource",
+                              "aws:cdk:cloudformation:props": {
+                                "parentId": {
+                                  "Ref": "DriverRestApiGwdriversB36BD1BD"
+                                },
+                                "pathPart": "{id}",
+                                "restApiId": {
+                                  "Ref": "DriverRestApiGw803A64D4"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.CfnResource",
+                              "version": "2.28.1"
+                            }
+                          },
+                          "GET": {
+                            "id": "GET",
+                            "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET",
+                            "children": {
+                              "ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}": {
+                                "id": "ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}",
+                                "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/ApiPermission.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "getdriverhandlerF0A847E0",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":execute-api:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "DriverRestApiGw803A64D4"
+                                          },
+                                          "/",
+                                          {
+                                            "Ref": "DriverRestApiGwDeploymentStagedevF8AEB2F1"
+                                          },
+                                          "/GET/drivers/*"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.28.1"
+                                }
+                              },
+                              "ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}": {
+                                "id": "ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}",
+                                "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/ApiPermission.Test.codingchallengeinfrastackDriverRestApiGw5CDF6ABA.GET..drivers.{id}",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                                  "aws:cdk:cloudformation:props": {
+                                    "action": "lambda:InvokeFunction",
+                                    "functionName": {
+                                      "Fn::GetAtt": [
+                                        "getdriverhandlerF0A847E0",
+                                        "Arn"
+                                      ]
+                                    },
+                                    "principal": "apigateway.amazonaws.com",
+                                    "sourceArn": {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":execute-api:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "DriverRestApiGw803A64D4"
+                                          },
+                                          "/test-invoke-stage/GET/drivers/*"
+                                        ]
+                                      ]
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                                  "version": "2.28.1"
+                                }
+                              },
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "coding-challenge-infra-stack/DriverRestApiGw/Default/drivers/{id}/GET/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::ApiGateway::Method",
+                                  "aws:cdk:cloudformation:props": {
+                                    "httpMethod": "GET",
+                                    "resourceId": {
+                                      "Ref": "DriverRestApiGwdriversid8AA0D2EA"
+                                    },
+                                    "restApiId": {
+                                      "Ref": "DriverRestApiGw803A64D4"
+                                    },
+                                    "authorizationType": "NONE",
+                                    "integration": {
+                                      "type": "AWS_PROXY",
+                                      "uri": {
+                                        "Fn::Join": [
+                                          "",
+                                          [
+                                            "arn:",
+                                            {
+                                              "Ref": "AWS::Partition"
+                                            },
+                                            ":apigateway:",
+                                            {
+                                              "Ref": "AWS::Region"
+                                            },
+                                            ":lambda:path/2015-03-31/functions/",
+                                            {
+                                              "Fn::GetAtt": [
+                                                "getdriverhandlerF0A847E0",
+                                                "Arn"
+                                              ]
+                                            },
+                                            "/invocations"
+                                          ]
+                                        ]
+                                      },
+                                      "integrationHttpMethod": "POST"
+                                    }
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_apigateway.CfnMethod",
+                                  "version": "2.28.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_apigateway.Method",
+                              "version": "2.28.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                          "version": "2.28.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_apigateway.Resource",
+                      "version": "2.28.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_apigateway.ResourceBase",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_apigateway.RestApi",
+              "version": "2.28.1"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "coding-challenge-infra-stack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "coding-challenge-infra-stack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.28.1"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "coding-challenge-infra-stack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.28.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.42"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.28.1"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.28.1"
+    }
+  }
+}
